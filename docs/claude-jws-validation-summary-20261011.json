@@ -1,0 +1,65 @@
+{
+  "xinmc-claude-full-unit.log": {
+    "sha256": "73daf066b48a7f87b274966153756755dcdf85d4ee28835e38652cb59ad6317c",
+    "failed_tests": [
+      "estConfigKeysAreEnvReachable",
+      "estAllPlatformsIncludesEveryConcretePlatform",
+      "estUpdateWithAccountBillingSettingsRollsBackWhenOutboxFails",
+      "estAPIKeyRepositoryListByUserIDAttachesLastUsedIP",
+      "estAPIKeyRepository_CreateWithLastUsedAt",
+      "estAPIKeyRepository_UpdateLastUsed",
+      "estAPIKeyRepository_UpdateLastUsedDeletedKey",
+      "estAPIKeyRepository_UpdateLastUsedDBError",
+      "estAPIKeyRepository_CreateDuplicateKey",
+      "estAPIKeyRepository_GetByKeyForAuth_PreservesMessagesDispatchModelConfig_SQLite",
+      "estLiveBalanceAdjustmentOutboxMigrationDefinesTransactionalSkip",
+      "estAPIContracts",
+      "estGatewayRoutesAdaptiveInboundDoesNot404LeafProtocols",
+      "estAdaptiveHybridParentSQLStaysOutOfEmbeddedMigrations",
+      "estAdaptiveUsageEvidenceMigration_EnforcesReservationAttemptUniqueness",
+      "estAPIKeyAdaptivePassiveFailoverMigration"
+    ]
+  },
+  "xinmc-claude-frontend-tests.log": {
+    "sha256": "8e27e35b5ef40fb881bf23508ac8ab45fb86b9a81d869c3a97471aadd81d709d",
+    "failed_tests": [
+      "FAIL  src/api/__tests__/admin.accounts.stats.spec.ts > admin account stats API > uses an endpoint-specific 180s timeout",
+      "FAIL  src/i18n/__tests__/openaiFastPolicyLocales.spec.ts > OpenAI Fast/Flex policy locale keys > describes target and other-model actions without whitelist terminology",
+      "FAIL  src/components/layout/__tests__/AppHeader.spec.ts > AppHeader model plaza > keeps the model plaza entry visible on small screens",
+      "FAIL  src/components/payment/__tests__/PaymentProviderDialog.spec.ts > PaymentProviderDialog payment guide > rejects custom EasyPay method types with built-in payment prefixes",
+      "FAIL  src/views/admin/__tests__/GroupsView.codexManifest.spec.ts > GroupsView Codex manifest binding > preserves consecutive child updates on the reactive edit config",
+      "FAIL  src/views/admin/__tests__/SubscriptionsView.userUsageLink.spec.ts > admin subscription users > searches current users when assigning a subscription",
+      "FAIL  src/views/admin/__tests__/SubscriptionsView.userUsageLink.spec.ts > admin subscription users > clears the assignment user immediately when input changes to \"another\"",
+      "FAIL  src/views/admin/__tests__/SubscriptionsView.userUsageLink.spec.ts > admin subscription users > clears the assignment user immediately when input changes to \"\"",
+      "FAIL  src/views/admin/__tests__/SubscriptionsView.userUsageLink.spec.ts > admin subscription users > renders the user email as a link to that user filtered usage records",
+      "FAIL  src/views/admin/__tests__/SubscriptionsView.userUsageLink.spec.ts > admin subscription users > uses the user ID label for the usage link when username mode has no username",
+      "FAIL  src/views/user/__tests__/DashboardView.spec.ts > user DashboardView > 首屏不阻塞 refreshUser，最近用量只取 5 条",
+      "FAIL  src/views/admin/ops/components/__tests__/OpsErrorDetailModal.spec.ts > OpsErrorDetailModal > shows a WAF chip for Cloudflare 1010 bodies"
+    ],
+    "result": "269 files / 1948 tests passed; 8 files / 12 tests failed; 1 unhandled error"
+  },
+  "xinmc-claude-frontend-lint.log": {
+    "sha256": "afe914d62e65c0cd24bf669ab83975856d430cf124a620a97266797b84bb7a18"
+  },
+  "xinmc-claude-frontend-types.log": {
+    "sha256": "f411d93723b4a84ac619fe00aa012e3b6842f4584109f0f3756629fd00ce78a3"
+  },
+  "xinmc-claude-frontend-devtypes.log": {
+    "sha256": "bf62b144a4493c6e3b705e27e9822684db8ee71ac7d1b27d8ddbe3ef5f1d8d41"
+  },
+  "xinmc-claude-frontend-devtests.log": {
+    "sha256": "0914bc509f7307c63a638adb24ceff2039c8fd281c83a46b50b59c708274dbe6"
+  },
+  "xinmc-claude-plaza-frontend.log": {
+    "sha256": "5a03f5667cbb465d9cdcf08c3c5ab1fd205fcbcbbbfc86dd9ebafc32fb2bdbd9"
+  },
+  "xinmc-claude-frontend-src-lint.log": {
+    "sha256": "d8ac0a84ee831acb86361117e0bd83e3d265d8b52ea95eb3c3f8622d86b6e71a"
+  },
+  "xinmc-jws-final-regression.jsonl": {
+    "sha256": "497c41d8d07475078d034212ebce8e326ca0a66bb3405726b2f4391665012df4"
+  },
+  "xinmc-jws-final-race.jsonl": {
+    "sha256": "167e6970df19d8313eeed1a545256872f8e85aa806c554220951b6359c7bf6ef"
+  }
+}

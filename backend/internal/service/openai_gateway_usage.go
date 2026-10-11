@@ -659,6 +659,10 @@ func (s *OpenAIGatewayService) calculateOpenAIRecordUsageCost(
 	// Token path (optional search surcharge is additive — never replaces token cost).
 	var tokenCost *CostBreakdown
 	var lastErr error
+	reasoningEffort := ""
+	if result != nil {
+		reasoningEffort = optionalStringValue(result.ReasoningEffort)
+	}
 	if len(billingModels) > 0 && billingModel != "" {
 		for _, candidate := range billingModels {
 			candidate = strings.TrimSpace(candidate)
@@ -673,6 +677,7 @@ func (s *OpenAIGatewayService) calculateOpenAIRecordUsageCost(
 				pricingAt,
 				tokens,
 				serviceTier,
+				reasoningEffort,
 				longContextBillingGate,
 				pricingContext,
 			)
@@ -767,6 +772,7 @@ func (s *OpenAIGatewayService) calculateOpenAIRecordUsageTokenCost(
 	pricingAt time.Time,
 	tokens UsageTokens,
 	serviceTier string,
+	reasoningEffort string,
 	longContextBillingGate *bool,
 	pricingContexts ...accountPricingContext,
 ) (*CostBreakdown, error) {
@@ -784,17 +790,15 @@ func (s *OpenAIGatewayService) calculateOpenAIRecordUsageTokenCost(
 		return s.billingService.CalculateCostUnified(CostInput{
 			Ctx: ctx, Model: billingModel, GroupID: &gid, Group: apiKey.Group,
 			Tokens: tokens, RequestCount: 1, RateMultiplier: multiplier, PricingAt: pricingAt,
-			ServiceTier: serviceTier, Resolver: s.resolver, Resolved: resolved,
+			ServiceTier: serviceTier, ReasoningEffort: reasoningEffort, Resolver: s.resolver, Resolved: resolved,
 			LongContextBillingEnabled: longContextBillingGate,
 		})
 	}
-	return s.billingService.calculateCostWithServiceTierPolicy(
-		billingModel,
-		tokens,
-		multiplier,
-		serviceTier,
-		longContextBillingGate == nil || *longContextBillingGate,
-	)
+	return s.billingService.CalculateCostUnified(CostInput{
+		Ctx: ctx, Model: billingModel, Tokens: tokens, RateMultiplier: multiplier,
+		ServiceTier: serviceTier, ReasoningEffort: reasoningEffort,
+		LongContextBillingEnabled: longContextBillingGate,
+	})
 }
 
 func (s *OpenAIGatewayService) calculateOpenAIImageCost(

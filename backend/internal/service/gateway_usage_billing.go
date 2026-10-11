@@ -1269,6 +1269,7 @@ func (s *GatewayService) calculateTokenCost(
 		RateMultiplier:    multiplier,
 		PricingAt:         pricingAt,
 		ServiceTier:       optionalStringValue(result.ServiceTier),
+		ReasoningEffort:   optionalStringValue(result.ReasoningEffort),
 		Resolver:          s.resolver,
 		Resolved:          resolved,
 		LegacyLongContext: legacy,

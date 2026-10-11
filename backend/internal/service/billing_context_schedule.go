@@ -103,6 +103,15 @@ func (s *BillingService) ResolveContextPricingSchedule(ctx context.Context, reso
 		return nil, nil
 	}
 
+	// Provider reference display must not substitute the supplier's marked-up card.
+	var referencePricing *ModelPricing
+	if in.Group == nil {
+		referencePricing = anthropicReferenceBillingCard(in.Model)
+		if referencePricing != nil {
+			resolved.BasePricing = referencePricing
+		}
+	}
+
 	var legacy *LegacyLongContextRule
 	if in.Group != nil {
 		legacy = s.LegacyLongContextRule(in.Platform)
@@ -121,6 +130,9 @@ func (s *BillingService) ResolveContextPricingSchedule(ctx context.Context, reso
 		LegacyLongContext: legacy,
 	}
 	probe := func(tokens UsageTokens) (*CostBreakdown, error) {
+		if referencePricing != nil {
+			return s.computeTokenBreakdown(referencePricing, tokens, 1, "", true), nil
+		}
 		r := req
 		r.Tokens = tokens
 		return s.CalculateTokenCostForRequest(r)

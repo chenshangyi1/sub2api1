@@ -495,6 +495,9 @@ func (s *ModelPlazaService) lookupOfficialPricing(ctx context.Context, modelName
 	}
 	var result *PlazaOfficialPricing
 	if mp, err := s.billingService.GetModelPricing(modelName); err == nil && mp != nil {
+		if reference := anthropicReferenceBillingCard(modelName); reference != nil {
+			mp = reference
+		}
 		result = &PlazaOfficialPricing{
 			InputPrice:      nonZeroPtr(mp.InputPricePerToken),
 			OutputPrice:     nonZeroPtr(mp.OutputPricePerToken),

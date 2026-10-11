@@ -135,7 +135,7 @@ func bindSelectedKeyRoute(c *gin.Context, gateway keyRouteBillingProvider, billi
 				BillingType:        service.BalancePreauthorizationBillingType(selected, subscription),
 				BillableInputBytes: len(body), EstimatedInputTokens: estimate.InputTokens,
 				InitialOutputWindowTokens: estimate.OutputTokens,
-				CostInput:                 gateway.BalancePreauthorizationCostInput(ctx, selected, model, binding.PricingAt, tier),
+				CostInput:                 service.WithRequestBillingEffort(gateway.BalancePreauthorizationCostInput(ctx, selected, model, binding.PricingAt, tier), body),
 			}
 			if request.UserID <= 0 && selected.User != nil {
 				request.UserID = selected.User.ID

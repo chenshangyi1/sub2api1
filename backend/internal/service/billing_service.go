@@ -362,6 +362,11 @@ func (s *BillingService) initFallbackPricing() {
 	s.fallbackPrices["claude-opus-4.8"] = pricingWithPriorityMultiplier(s.fallbackPrices["claude-opus-4.7"], 2)
 	s.fallbackPrices["claude-opus-5"] = pricingWithPriorityMultiplier(s.fallbackPrices["claude-opus-4.8"], 2)
 
+	// JWS cards protect against missing/stale remote catalogs.
+	for _, model := range []string{"claude-opus-5-5", "claude-fable-5", "claude-fable-5-1", "claude-sonnet-5", "claude-sonnet-5-5", "claude-haiku-4-5"} {
+		s.fallbackPrices[model] = anthropicJWSBillingCard(model)
+	}
+
 	// Gemini 3.1 Pro
 	s.fallbackPrices["gemini-3.1-pro"] = &ModelPricing{
 		InputPricePerToken:         2e-6,   // $2 per MTok
@@ -869,6 +874,9 @@ func (s *BillingService) initFallbackPricing() {
 
 // getFallbackPricing 根据模型系列获取回退价格
 func (s *BillingService) getFallbackPricing(model string) *ModelPricing {
+	if pricing := anthropicJWSBillingCard(model); pricing != nil {
+		return pricing
+	}
 	modelLower := strings.ToLower(model)
 
 	// 按模型系列匹配
@@ -1175,6 +1183,9 @@ func (s *BillingService) HasIdentifiedTokenPricing(model string) bool {
 	if model == "" {
 		return false
 	}
+	if anthropicJWSBillingCard(model) != nil {
+		return true
+	}
 	if isDeepSeekFamilyOrNumericVersion(normalizeDeepSeekModelName(model), "deepseek-v3.2") {
 		return s.fallbackPrices["deepseek-v3.2"] != nil
 	}
@@ -1214,6 +1225,12 @@ func (s *BillingService) getModelPricingWithSource(model string) (*ModelPricing,
 			return s.applyModelSpecificPricingPolicy(model, pricing), PricingSourceFallback, nil
 		}
 		return nil, "", fmt.Errorf("%w for model: %s", ErrModelPricingUnavailable, model)
+	}
+
+	// Recent Anthropic versions must not inherit older family prices or tiers.
+	// Group/channel overrides are resolved separately.
+	if pricing := anthropicJWSBillingCard(model); pricing != nil {
+		return pricing, PricingSourceFallback, nil
 	}
 
 	// 1. 优先从动态价格服务获取
@@ -1356,6 +1373,7 @@ type CostInput struct {
 	SizeTier                  string  // 按次/图片模式的层级标签（"1K","2K","4K","HD" 等）
 	RateMultiplier            float64
 	PricingAt                 time.Time             // 渠道分时定价使用的计费时刻
+	ReasoningEffort           string                // effective effort after gateway mapping
 	ServiceTier               string                // "priority","flex","" 等
 	Resolver                  *ModelPricingResolver // 定价解析器
 	Resolved                  *ResolvedPricing      // 可选：预解析的定价结果（避免重复 Resolve 调用）

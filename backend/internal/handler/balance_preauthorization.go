@@ -58,7 +58,7 @@ func preauthorizeTextGatewayRequest(
 		BillableInputBytes:        len(body),
 		EstimatedInputTokens:      tokenEstimate.InputTokens,
 		InitialOutputWindowTokens: tokenEstimate.OutputTokens,
-		CostInput:                 pricing.BalancePreauthorizationCostInput(ctx, apiKey, billingModel, pricingAt, serviceTier),
+		CostInput:                 service.WithRequestBillingEffort(pricing.BalancePreauthorizationCostInput(ctx, apiKey, billingModel, pricingAt, serviceTier), body),
 	})
 }
 

@@ -51,6 +51,15 @@ func perRequestTestAPIKey() *service.APIKey {
 	return &service.APIKey{ID: 7, UserID: 42, GroupID: &groupID}
 }
 
+func TestPreauthorizeTextCarriesFableMaxEffort(t *testing.T) {
+	preauthorizer := &preauthorizerStub{requires: true}
+	_, err := preauthorizeTextGatewayRequest(context.Background(), preauthorizer, &pricingProviderStub{}, perRequestTestAPIKey(), nil,
+		[]byte(`{"model":"claude-fable-5-1","output_config":{"effort":"max"}}`), "claude-fable-5-1", time.Unix(1000, 0), "")
+	require.NoError(t, err)
+	require.NotNil(t, preauthorizer.captured)
+	require.Equal(t, "max", preauthorizer.captured.CostInput.ReasoningEffort)
+}
+
 func TestPreauthorizeTextPassesRequestLocalTokenEstimate(t *testing.T) {
 	preauthorizer := &preauthorizerStub{requires: true}
 	pricing := &pricingProviderStub{}

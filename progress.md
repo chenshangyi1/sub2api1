@@ -39,3 +39,41 @@ Candidate image ID e8f9acf6dfcab55ace34151be7526456acdb0f2706592a3c9c4e4a44e9b18
 ### Notes
 
 This step changes only handoff/progress documentation locally; uploaded binaries and test evidence reside under the existing server build root's outputs/deepseek-v32-candidate. The unused image can be discarded without runtime rollback. Source sync backup: /opt/sub2api/backups/v32-candidate-20261007T082356Z. Old /app Go source is inherited in the binary-overlay image, so future compilation must use the recorded repository revision. No service restart or production data write was performed.
+
+## 2026-10-07 - Task: Passive CF/request latency evidence collection
+
+### What was done
+
+Collected bounded live internal HTTP timing metadata in memory, without retaining raw packets, credentials, cookies, conversation contents or user IPs. Two natural SiliconFlow DeepSeek V3.2 successes were joined by response client/request IDs to CF-Ray, application logs and read-only usage records. Both entered CF LHR; origin first SSE events were 3.725/4.825 seconds, application totals 35.771/53.383 seconds, maximum internal SSE gaps 0.728/2.069 seconds. Historical application/Caddy logs and database request metadata do not retain CF-Ray, so earlier slow requests' entry nodes cannot be reconstructed from these records. The main historical delays occurred within upstream forwarding; provider queuing, transport, historical stream stalls and downstream cancellation remain distinguishable hypotheses, not proven causes.
+
+### Verification and limitations
+
+Capture windows were 19:13:04–19:17:16 and 19:17:28–19:24:28 UTC+8, 4009 parsed packets total, zero kernel drops. A keepalive idle-time accounting issue in the initial temporary parser was detected using unauthenticated 401 probes, fixed and checked with a synthetic reuse case. Initial sample timing was recomputed from its matched application access log; raw initial start/duration fields are not relied upon. Whitelisted synthetic framing/SSE/DONE timing and sensitive-field exclusion passed. No model calls were made by the agent. Two normal live samples do not exclude intermittent CF/downstream or server-to-provider issues, and origin-to-Caddy capture does not prove end-user delivery.
+
+### Notes
+
+Scripts, redacted metadata and report are in ignored work/; see work/latency-investigation-report.md and work/live-latency-joined.json. No Caddy/DNS/database/Compose/source/image change or service restart occurred. All temporary capture processes exited. Final container ID/image/StartedAt remain unchanged, healthy, restart_count=0, readyz HTTP 200. Candidate pricing image remains unused. No server rollback is necessary; only temporary local diagnostic artifacts and this progress entry were added. No GitHub push was performed for diagnostic artifacts.
+
+## 2026-10-07 - Task: Deploy verified V3.2 pricing candidate
+
+### What was done
+
+After the user explicitly authorized deployment, created and validated a root-only PostgreSQL backup and runtime snapshots at `/opt/sub2api/backups/v32-rollout-20261007T161509Z`. The candidate's read-only migration check passed using the current config and environment. Changed only the `sub2api` image field in the live Compose file and recreated only that app service; PostgreSQL, Redis, persistent volumes, frontend, Caddy and existing group/user multipliers were preserved.
+
+### Verification
+
+The candidate `sub2api1:deepseek-v32-cny-9c3c6fbd8-20261007` is healthy with restart count 0 and the expected image/executable hashes. Origin and public `/readyz` returned HTTP 200. Public model-plaza shows DeepSeek V3.2 base prices of 4/6/0.40 per million tokens and group 16 rate 0.9; unrelated model prices and group rates are unchanged. PostgreSQL and Redis container IDs/start times, runtime mounts/settings, frontend symlink and Caddy/config checksums are unchanged. Startup logs had no ERROR/FATAL/PANIC entries. The readiness timeline measured one unavailable sample during the single-container switch; healthy state was reached about seven seconds after switching.
+
+### Rollback
+
+Restore `/opt/sub2api/backups/v32-rollout-20261007T161509Z/docker-compose.local.yml` and run the app-only Compose recreate. Keep the database backup for data recovery only; do not restore it for an image rollback.
+
+## 2026-10-11 - Task: Deploy DeepSeek V4 Pro pricing candidate
+
+The user authorized replacing the verified candidate image. The candidate's only pending migration, `256_account_stats_rules_user_billing.sql`, was applied successfully as an additive `BOOLEAN NOT NULL DEFAULT FALSE` column before the app switch. The PostgreSQL dump and runtime backup are retained at `/opt/sub2api/backups/deepseek-v4-pro-rollout-20261010T175122Z`.
+
+Production now runs `sub2api1:deepseek-v4-pro-11f9760e-20261011` with image ID `sha256:0d136bc6b2216825cf4431bcb3914b49e9ca21307697af6126626c647a770b73`, container `ad9ff96cc91660356d62007bf7c2ad9acaa81fbc4a4951b14f2019151582ebb4`, and executable SHA256 `47bd98a37359060c96a7c66a41d5cf8044bb9a0ce395215398981e147b58e461`. The app is healthy, restart count 0, origin/public `/readyz` are HTTP 200, PostgreSQL and Redis were not restarted, and startup logs contain no ERROR/FATAL/PANIC entries. Roll back only the app Compose image from the recorded backup; do not restore the database for image rollback.
+
+## 2026-10-11 - Task: Retain current/previous images and remove old tags
+
+Kept the running main-app image plus the previous deployed gateway-cors image and the same-day account-rule candidate. Kept upstream-ops current `jws-browser-20261009` plus previous `no-profit-20261009`, along with the active PostgreSQL and Redis images. Removed four unreferenced historical tags: DeepSeek V3.2, Grok build-fast, upstream-ops profit-reconcile, and upstream-ops sub2api-sync-home. No containers, volumes or build cache were pruned. Before/after inventories and deletion checks are recorded in `/opt/sub2api/backups/image-cleanup-20261010T180533Z`; all services remained healthy with restart count zero.

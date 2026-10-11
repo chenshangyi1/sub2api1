@@ -14,6 +14,7 @@ func EstimateAdaptiveHoldBaseFromPreauthorization(calculator *BillingService, co
 	if calculator == nil {
 		return decimal.Zero, ErrInvalidBillingPreauthorizationEstimate
 	}
+	costInput = WithRequestBillingEffort(costInput, body)
 	tokens := EstimateBalancePreauthorizationTokens(body)
 	costInput.Tokens = UsageTokens{
 		InputTokens:  tokens.InputTokens,
