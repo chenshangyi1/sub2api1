@@ -1,5 +1,17 @@
 # xinmc pricing candidate handoff — 2026-10-07
 
+## Claude JWS candidate — 2026-10-11, built but NOT deployed
+
+User authorized verification, sub2api1/main synchronization, server source staging synchronization and candidate construction, explicitly prohibiting a live image switch or service interruption. Candidate `sub2api1:claude-jws-2b4f5d51a-20261011`, image ID `sha256:017b5b91dd650e44e9cc395cd5edfeb91e4e9eab9d13696e651daec0edc519c1`, compiled source `2b4f5d51a926256f2c7727b42f98b2e301f0e273`, executable SHA256 `f809796957a4fb1b089efb56ec3fae949656983b69a57c0e06d6213ebba80717`. Final notes/recipe corrections are documentation/packaging only; the executable remains compiled from that source commit.
+
+Claude uses JWS supplier cards in the candidate; Fable retail 1.2x and Max 3x surcharges are removed per the final instruction, while explicit cards and separately configured group/user multipliers remain authoritative. Laogou Grok prices are unchanged. Actual JWS evidence covers Opus 5.5, Sonnet 5 and Haiku 4.5; Fable write prices and some context/model/speed variants lack actual usage proof. Opus Fast retains its preexisting 2x rule; Standard is the verified JWS mode.
+
+Local financial regression 496 and race 64 test/subtest events pass; handler-focused and frontend plaza 25 tests pass, main Vue typecheck passes. Candidate isolated Linux checks pass 64 selected test/subtest events, version/hash and runtime-config comparisons. Full backend/frontend/lint failures remain documented in `docs/claude-jws-candidate-20261011.md`; do not claim the full suite is green.
+
+Artifacts/evidence: `/opt/sub2api/build_context/outputs/claude-jws-candidate`. Source staging: `/opt/sub2api/build_context/billing-847ce5afa-full`; original sync backup: `/opt/sub2api/backups/claude-jws-source-20261011T135045Z`. Canonical source local changes are preserved. Packaging uses a minimal context and command-local DOCKER_BUILDKIT=0 over the pinned current image; inherited image Go source is old, so future compilation must use the recorded Git revision.
+
+All four production container IDs/images/start times/restart counts and health remain unchanged; the app is still deepseek-v4-pro-11f9760e-20261011, healthy, restart 0. Compose/Caddy hashes and frontend pointer are unchanged. Nine observed origin readiness samples and final origin/public checks returned 200. No deployment, migration, production data/card/multiplier write, or paid inference occurred. Pricing changes are not active on production.
+
 ## Image retention cleanup — 2026-10-11
 
 At the user's request, retained the running images and the most recent rollback images without restarting any service. Retained main-app images are `sub2api1:deepseek-v4-pro-11f9760e-20261011` (running), `sub2api1:gateway-cors-8ff6cfb17-20261009` (previous deployed), and the same-day `sub2api1:account-rule-eb6b9fba1-20261011` candidate. Retained upstream-ops images are `upstream-ops:jws-browser-20261009` (running) and `upstream-ops:no-profit-20261009` (previous). `postgres:18-alpine` and `redis:8-alpine` remain retained for their running containers.

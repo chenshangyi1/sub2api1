@@ -77,3 +77,12 @@ Production now runs `sub2api1:deepseek-v4-pro-11f9760e-20261011` with image ID `
 ## 2026-10-11 - Task: Retain current/previous images and remove old tags
 
 Kept the running main-app image plus the previous deployed gateway-cors image and the same-day account-rule candidate. Kept upstream-ops current `jws-browser-20261009` plus previous `no-profit-20261009`, along with the active PostgreSQL and Redis images. Removed four unreferenced historical tags: DeepSeek V3.2, Grok build-fast, upstream-ops profit-reconcile, and upstream-ops sub2api-sync-home. No containers, volumes or build cache were pruned. Before/after inventories and deletion checks are recorded in `/opt/sub2api/backups/image-cleanup-20261010T180533Z`; all services remained healthy with restart count zero.
+
+
+## 2026-10-11 - Task: Verify Claude JWS source and build unused candidate
+
+Synchronized compiled billing source 2b4f5d51a926256f2c7727b42f98b2e301f0e273 to sub2api1/main and the existing server staging tree, after backups and source hash verification (3,427 files match). Built sub2api1:claude-jws-2b4f5d51a-20261011 with image ID sha256:017b5b91dd650e44e9cc395cd5edfeb91e4e9eab9d13696e651daec0edc519c1 and executable SHA256 f809796957a4fb1b089efb56ec3fae949656983b69a57c0e06d6213ebba80717.
+
+Financial regression 496, race 64, isolated candidate 64 test/subtest events, focused handler checks, frontend plaza 25 and main Vue typecheck pass. Full backend and frontend failures plus lint/dev typecheck blockers are documented; no full-suite success claim. Final documentation and legacy-compatible COPY recipe corrections do not alter compiled billing source.
+
+Evidence: /opt/sub2api/build_context/outputs/claude-jws-candidate; original source backup: /opt/sub2api/backups/claude-jws-source-20261011T135045Z. All four running containers and Compose/Caddy/frontend pointers are unchanged. Candidate is unused. Nine successful-build readiness samples and final origin/public checks returned 200. No restart, live image switch, migration, DB write or paid model request.

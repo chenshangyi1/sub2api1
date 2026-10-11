@@ -2,22 +2,22 @@
   "xinmc-claude-full-unit.log": {
     "sha256": "73daf066b48a7f87b274966153756755dcdf85d4ee28835e38652cb59ad6317c",
     "failed_tests": [
-      "estConfigKeysAreEnvReachable",
-      "estAllPlatformsIncludesEveryConcretePlatform",
-      "estUpdateWithAccountBillingSettingsRollsBackWhenOutboxFails",
-      "estAPIKeyRepositoryListByUserIDAttachesLastUsedIP",
-      "estAPIKeyRepository_CreateWithLastUsedAt",
-      "estAPIKeyRepository_UpdateLastUsed",
-      "estAPIKeyRepository_UpdateLastUsedDeletedKey",
-      "estAPIKeyRepository_UpdateLastUsedDBError",
-      "estAPIKeyRepository_CreateDuplicateKey",
-      "estAPIKeyRepository_GetByKeyForAuth_PreservesMessagesDispatchModelConfig_SQLite",
-      "estLiveBalanceAdjustmentOutboxMigrationDefinesTransactionalSkip",
-      "estAPIContracts",
-      "estGatewayRoutesAdaptiveInboundDoesNot404LeafProtocols",
-      "estAdaptiveHybridParentSQLStaysOutOfEmbeddedMigrations",
-      "estAdaptiveUsageEvidenceMigration_EnforcesReservationAttemptUniqueness",
-      "estAPIKeyAdaptivePassiveFailoverMigration"
+      "TestConfigKeysAreEnvReachable",
+      "TestAllPlatformsIncludesEveryConcretePlatform",
+      "TestUpdateWithAccountBillingSettingsRollsBackWhenOutboxFails",
+      "TestAPIKeyRepositoryListByUserIDAttachesLastUsedIP",
+      "TestAPIKeyRepository_CreateWithLastUsedAt",
+      "TestAPIKeyRepository_UpdateLastUsed",
+      "TestAPIKeyRepository_UpdateLastUsedDeletedKey",
+      "TestAPIKeyRepository_UpdateLastUsedDBError",
+      "TestAPIKeyRepository_CreateDuplicateKey",
+      "TestAPIKeyRepository_GetByKeyForAuth_PreservesMessagesDispatchModelConfig_SQLite",
+      "TestLiveBalanceAdjustmentOutboxMigrationDefinesTransactionalSkip",
+      "TestAPIContracts",
+      "TestGatewayRoutesAdaptiveInboundDoesNot404LeafProtocols",
+      "TestAdaptiveHybridParentSQLStaysOutOfEmbeddedMigrations",
+      "TestAdaptiveUsageEvidenceMigration_EnforcesReservationAttemptUniqueness",
+      "TestAPIKeyAdaptivePassiveFailoverMigration"
     ]
   },
   "xinmc-claude-frontend-tests.log": {
@@ -33,7 +33,7 @@
       "FAIL  src/views/admin/__tests__/SubscriptionsView.userUsageLink.spec.ts > admin subscription users > clears the assignment user immediately when input changes to \"\"",
       "FAIL  src/views/admin/__tests__/SubscriptionsView.userUsageLink.spec.ts > admin subscription users > renders the user email as a link to that user filtered usage records",
       "FAIL  src/views/admin/__tests__/SubscriptionsView.userUsageLink.spec.ts > admin subscription users > uses the user ID label for the usage link when username mode has no username",
-      "FAIL  src/views/user/__tests__/DashboardView.spec.ts > user DashboardView > 首屏不阻塞 refreshUser，最近用量只取 5 条",
+      "FAIL  src/views/user/__tests__/DashboardView.spec.ts > user DashboardView > \u9996\u5c4f\u4e0d\u963b\u585e refreshUser\uff0c\u6700\u8fd1\u7528\u91cf\u53ea\u53d6 5 \u6761",
       "FAIL  src/views/admin/ops/components/__tests__/OpsErrorDetailModal.spec.ts > OpsErrorDetailModal > shows a WAF chip for Cloudflare 1010 bodies"
     ],
     "result": "269 files / 1948 tests passed; 8 files / 12 tests failed; 1 unhandled error"
@@ -61,5 +61,44 @@
   },
   "xinmc-jws-final-race.jsonl": {
     "sha256": "167e6970df19d8313eeed1a545256872f8e85aa806c554220951b6359c7bf6ef"
+  },
+  "candidate_verified": {
+    "runtime_unchanged": true,
+    "candidate_unused": true,
+    "candidate": {
+      "revision": "2b4f5d51a926256f2c7727b42f98b2e301f0e273",
+      "date": "2026-10-11T13:49:46Z",
+      "binary_sha256": "f809796957a4fb1b089efb56ec3fae949656983b69a57c0e06d6213ebba80717",
+      "toolchain": "go1.27.0",
+      "target": "linux/amd64",
+      "tags": [
+        "embed",
+        "timetzdata"
+      ],
+      "CGO_ENABLED": "0",
+      "GOEXPERIMENT": "jsonv2",
+      "image_tag": "sub2api1:claude-jws-2b4f5d51a-20261011",
+      "image_id": "sha256:017b5b91dd650e44e9cc395cd5edfeb91e4e9eab9d13696e651daec0edc519c1",
+      "base_image_id": "sha256:0d136bc6b2216825cf4431bcb3914b49e9ca21307697af6126626c647a770b73",
+      "runtime_unchanged": true,
+      "runtime_config_matches_base": true,
+      "isolated_tests_passed": true,
+      "backup": "/opt/sub2api/backups/claude-jws-source-20261011T135045Z"
+    },
+    "isolated_test_pass_events": 64,
+    "readiness_samples": 9,
+    "readiness_non200": 0,
+    "final_health": {
+      "origin": 200,
+      "public": 200
+    },
+    "evidence_sha256": {
+      "candidate_build.json": "622d876977cab943784698edb701d4b81b41e44affd37a62e2d2f3a4fc6fd1f1",
+      "isolated-billing-tests.log": "f2aadd2afd98cf4efc89b7eb0ce38ee35df7dd4e7c49d6529e1a5c3496ccb810",
+      "readyz-samples.json": "6ce4f13658231e955417219fb52ab79a57c9bb21bae9f2fb1ddaba18d728de5e",
+      "final-runtime-check.json": "67a6222c3aabf95a6859878d6e78087cd74cd826a4cc63c9a025c9ba33486d9b",
+      "version.txt": "b498c4764e54248d6122903b8cc8ec4453539bd21d9efdec285cd3c84db4eb0c",
+      "build.log": "a0fc247344456824180ecdd6f8ca8ba12feeb3e18717e161d80ca3fa1e392c60"
+    }
   }
 }
