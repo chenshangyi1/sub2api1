@@ -410,6 +410,12 @@ func (s *BillingService) initFallbackPricing() {
 		CacheReadPricePerToken: 0.075e-6,
 		SupportsCacheBreakdown: false,
 	}
+	// Gemini 4 Argon (Google AI paid-tier pricing through 2026-11-30):
+	// $2 input / $10 output / $0.10 cached input per MTok.
+	gemini4Argon := &ModelPricing{InputPricePerToken: 2e-6, OutputPricePerToken: 10e-6, CacheReadPricePerToken: 0.10e-6, SupportsCacheBreakdown: false}
+	for _, model := range []string{"gemini-4-argon", "gemini-4-argon-a", "gemini-4-argon-instant"} {
+		s.fallbackPrices[model] = gemini4Argon
+	}
 
 	// OpenAI GPT-5.4（业务指定价格）
 	s.fallbackPrices["gpt-5.4"] = &ModelPricing{
@@ -1136,6 +1142,12 @@ func isGrokBuildFastSiteModel(model string) bool {
 	return strings.EqualFold(xai.StripGrokProviderPrefix(model), "grok-4.7-build-fast")
 }
 
+func isGemini4ArgonModel(model string) bool {
+	native := strings.ToLower(strings.TrimSpace(model))
+	native = strings.TrimPrefix(native, "models/")
+	return native == "gemini-4-argon" || native == "gemini-4-argon-a" || native == "gemini-4-argon-instant"
+}
+
 func isGrokUnknownTextFamilyModel(model string) bool {
 	native := strings.ToLower(strings.TrimSpace(xai.StripGrokProviderPrefix(model)))
 	if isGrokMediaFamilyModel(native) {
@@ -1192,6 +1204,9 @@ func (s *BillingService) HasIdentifiedTokenPricing(model string) bool {
 	if isGrokBuildFastSiteModel(model) {
 		return s.fallbackPrices["grok-4.7-build-fast"] != nil
 	}
+	if isGemini4ArgonModel(model) {
+		return s.fallbackPrices["gemini-4-argon"] != nil
+	}
 	if s.pricingService != nil {
 		// 仅有图片价的条目不能用于 token 计费，口径与 GetModelPricing 保持一致。
 		if pricing := s.pricingService.GetIdentifiedModelPricing(model); pricing != nil && !pricing.TokenPricingAbsent {
@@ -1222,6 +1237,12 @@ func (s *BillingService) getModelPricingWithSource(model string) (*ModelPricing,
 	// this exact model at a lower rate. Explicit group/channel cards still override it.
 	if isGrokBuildFastSiteModel(model) {
 		if pricing := s.fallbackPrices["grok-4.7-build-fast"]; pricing != nil {
+			return s.applyModelSpecificPricingPolicy(model, pricing), PricingSourceFallback, nil
+		}
+		return nil, "", fmt.Errorf("%w for model: %s", ErrModelPricingUnavailable, model)
+	}
+	if isGemini4ArgonModel(model) {
+		if pricing := s.fallbackPrices["gemini-4-argon"]; pricing != nil {
 			return s.applyModelSpecificPricingPolicy(model, pricing), PricingSourceFallback, nil
 		}
 		return nil, "", fmt.Errorf("%w for model: %s", ErrModelPricingUnavailable, model)

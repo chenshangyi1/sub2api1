@@ -578,6 +578,27 @@ func TestBillingService_Gemini38FlashThinkingTierFallbacksAreBillable(t *testing
 	}
 }
 
+func TestBillingService_Gemini4ArgonFallbacksAreBillable(t *testing.T) {
+	svc := NewBillingService(&config.Config{}, nil)
+	tokens := UsageTokens{InputTokens: 1_000_000, OutputTokens: 1_000_000, CacheReadTokens: 1_000_000}
+
+	for _, model := range []string{
+		"gemini-4-argon",
+		"gemini-4-argon-a",
+		"gemini-4-argon-instant",
+		"models/gemini-4-argon",
+	} {
+		t.Run(model, func(t *testing.T) {
+			cost, err := svc.CalculateCost(model, tokens, 1)
+			require.NoError(t, err)
+			require.InDelta(t, 2.0, cost.InputCost, 1e-12)
+			require.InDelta(t, 10.0, cost.OutputCost, 1e-12)
+			require.InDelta(t, 0.10, cost.CacheReadCost, 1e-12)
+			require.InDelta(t, 12.10, cost.TotalCost, 1e-12)
+		})
+	}
+}
+
 func TestBillingService_Gemini36FlashThinkingTierFallbacksAreBillable(t *testing.T) {
 	svc := NewBillingService(&config.Config{}, nil)
 	tokens := UsageTokens{InputTokens: 1_000_000, OutputTokens: 1_000_000, CacheReadTokens: 1_000_000}
