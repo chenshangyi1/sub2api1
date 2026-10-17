@@ -1,5 +1,15 @@
 # xinmc pricing candidate handoff — 2026-10-07
 
+## Card recharge center frontend — deployed 2026-10-17
+
+The user authorized the verified frontend-only release. At 17:01:26 Singapore time, the static pointer switched atomically to `/opt/sub2api/frontend-releases/20261017T-recharge-f7077c3f0`, and Caddy reloaded the validated `frame-src https://wzyp.cn` addition. Active Caddy SHA256 is `931009e52c9b47b4e836963fe1fafdde6d26835128a7b4803b45a9fc6b5dd091`; published `index.html` SHA256 is `0e978bd1328eecf930a9384f5dc7441d8618e48831c1d682a33ee35eaedd8206`.
+
+Backup/evidence: `/opt/sub2api/backups/recharge-frontend-rollout-20261017T085237Z`. It contains a validated PostgreSQL archive, previous Caddy file and frontend pointer, container baselines, readiness samples and endpoint checks. The old frontend remains `/opt/sub2api/frontend-releases/20261006T014419Z-profit-ui`; rollback is an atomic pointer restore plus installation/reload of `Caddyfile.before`. Do not restore the database for a frontend rollback.
+
+Thirty-one origin readiness samples had zero failures. Public `/readyz`, `/recharge` and `/redeem` returned 200; CSP, assets, MIME/cache behavior, missing-asset 404, unchanged public settings and unauthenticated gateway 401 JSON passed. Browser verification confirmed navigation, redemption/external-shop links and the iframe URL without console errors; the merchant endpoint returned 200 with no frame-blocking header. No purchase, payment or card redemption was performed.
+
+All four production containers retained exact IDs/images/start times/restart counts and healthy status. The backend remains on Argon image `sha256:c2da8fbaf6a37ceb1505277a5a3a3b7f5a150e752859af04752dc0a994229d38`; Compose and all production data are unchanged. No backend rollout, migration, balance write or image cleanup occurred.
+
 ## Card recharge center — 2026-10-17, built but NOT deployed
 
 User approved an authenticated `/recharge` page embedding `https://wzyp.cn/shop/6B2BP3Q3`, with a link to the existing card-redemption flow. No identity/session token/source URL is sent to the shop. Runtime source `f7077c3f05daa28bab36445022a6efe19df3e28e` is synchronized to `chenshangyi1/sub2api1/main` and the existing server source staging tree. Source backup: `/opt/sub2api/backups/recharge-source-20261017T083230Z`; candidate artifacts: `/opt/sub2api/incoming/recharge-f7077c3f0-20261017`.
