@@ -47,6 +47,8 @@ const (
 	AirwallexDemoStaticDomain = "https://static-demo.airwallex.com"
 	// AirwallexDemoCheckoutDomain 是 Airwallex 沙箱环境收银台元素和 iframe 域名。
 	AirwallexDemoCheckoutDomain = "https://checkout-demo.airwallex.com"
+	// RechargeShopDomain is the public card shop embedded by the user recharge center.
+	RechargeShopDomain = "https://wzyp.cn"
 )
 
 var requiredCSPDirectiveValues = []struct {
@@ -85,6 +87,7 @@ var requiredCSPDirectiveValues = []struct {
 	{"style-src", AirwallexDemoStaticDomain},
 	{"style-src", AirwallexDemoCheckoutDomain},
 	{"frame-src", AirwallexDemoCheckoutDomain},
+	{"frame-src", RechargeShopDomain},
 }
 
 // GenerateNonce generates a cryptographically secure random nonce.

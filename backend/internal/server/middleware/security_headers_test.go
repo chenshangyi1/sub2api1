@@ -82,6 +82,19 @@ func TestGetNonceFromContext(t *testing.T) {
 }
 
 func TestSecurityHeaders(t *testing.T) {
+	t.Run("allows_the_card_shop_in_embedded_recharge_center", func(t *testing.T) {
+		cfg := config.CSPConfig{Enabled: true, Policy: "default-src 'self'"}
+		middleware := SecurityHeaders(cfg, nil)
+
+		w := httptest.NewRecorder()
+		c, _ := gin.CreateTestContext(w)
+		c.Request = httptest.NewRequest(http.MethodGet, "/recharge", nil)
+
+		middleware(c)
+
+		assert.Equal(t, 1, countDirectiveValue(w.Header().Get("Content-Security-Policy"), "frame-src", RechargeShopDomain))
+	})
+
 	t.Run("sets_basic_security_headers", func(t *testing.T) {
 		cfg := config.CSPConfig{Enabled: false}
 		middleware := SecurityHeaders(cfg, nil)
