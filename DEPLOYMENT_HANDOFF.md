@@ -1,5 +1,23 @@
 # xinmc pricing candidate handoff — 2026-10-07
 
+## Card recharge center frontend — deployed 2026-10-17
+
+The user authorized the verified frontend-only release. At 17:01:26 Singapore time, the static pointer switched atomically to `/opt/sub2api/frontend-releases/20261017T-recharge-f7077c3f0`, and Caddy reloaded the validated `frame-src https://wzyp.cn` addition. Active Caddy SHA256 is `931009e52c9b47b4e836963fe1fafdde6d26835128a7b4803b45a9fc6b5dd091`; published `index.html` SHA256 is `0e978bd1328eecf930a9384f5dc7441d8618e48831c1d682a33ee35eaedd8206`.
+
+Backup/evidence: `/opt/sub2api/backups/recharge-frontend-rollout-20261017T085237Z`. It contains a validated PostgreSQL archive, previous Caddy file and frontend pointer, container baselines, readiness samples and endpoint checks. The old frontend remains `/opt/sub2api/frontend-releases/20261006T014419Z-profit-ui`; rollback is an atomic pointer restore plus installation/reload of `Caddyfile.before`. Do not restore the database for a frontend rollback.
+
+Thirty-one origin readiness samples had zero failures. Public `/readyz`, `/recharge` and `/redeem` returned 200; CSP, assets, MIME/cache behavior, missing-asset 404, unchanged public settings and unauthenticated gateway 401 JSON passed. Browser verification confirmed navigation, redemption/external-shop links and the iframe URL without console errors; the merchant endpoint returned 200 with no frame-blocking header. No purchase, payment or card redemption was performed.
+
+All four production containers retained exact IDs/images/start times/restart counts and healthy status. The backend remains on Argon image `sha256:c2da8fbaf6a37ceb1505277a5a3a3b7f5a150e752859af04752dc0a994229d38`; Compose and all production data are unchanged. No backend rollout, migration, balance write or image cleanup occurred.
+
+## Card recharge center — 2026-10-17, built but NOT deployed
+
+User approved an authenticated `/recharge` page embedding `https://wzyp.cn/shop/6B2BP3Q3`, with a link to the existing card-redemption flow. No identity/session token/source URL is sent to the shop. Runtime source `f7077c3f05daa28bab36445022a6efe19df3e28e` is synchronized to `chenshangyi1/sub2api1/main` and the existing server source staging tree. Source backup: `/opt/sub2api/backups/recharge-source-20261017T083230Z`; candidate artifacts: `/opt/sub2api/incoming/recharge-f7077c3f0-20261017`.
+
+Candidate `sub2api1:recharge-center-f7077c3f0-20261017`, image ID `sha256:02aea3438eb6fb6b0e7b8368a1f54155b2fa3d08fb05ec0aa99e56f2d17b1d53`, executable SHA256 `a6b7f8c616de844a98d6de6f920958a6ce87f212bab3b6b67a1a76f9d024d37c`. Frontend focused tests (52), typecheck/build, live-shop local preview and isolated CSP/version/empty-data startup checks passed. Payment and redemption were not executed. See `docs/recharge-center-candidate-20261017.md` for hashes and limits.
+
+All four production containers and current Argon image remain unchanged and healthy. Compose/Caddy and frontend pointer are unchanged; origin/public readiness returned 200. No balance changes, migration, production restart, rollout or image cleanup. A future separately authorized frontend publication must deploy the new static assets and validated candidate Caddy `frame-src https://wzyp.cn` addition together. The candidate configuration is not active. Inherited Docker image source is historical; use the recorded runtime Git revision for rebuilds.
+
 ## Claude JWS candidate — 2026-10-11, built but NOT deployed
 
 User authorized verification, sub2api1/main synchronization, server source staging synchronization and candidate construction, explicitly prohibiting a live image switch or service interruption. Candidate `sub2api1:claude-jws-2b4f5d51a-20261011`, image ID `sha256:017b5b91dd650e44e9cc395cd5edfeb91e4e9eab9d13696e651daec0edc519c1`, compiled source `2b4f5d51a926256f2c7727b42f98b2e301f0e273`, executable SHA256 `f809796957a4fb1b089efb56ec3fae949656983b69a57c0e06d6213ebba80717`. Final notes/recipe corrections are documentation/packaging only; the executable remains compiled from that source commit.

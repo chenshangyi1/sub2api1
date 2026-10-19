@@ -258,6 +258,18 @@ const routes: RouteRecordRaw[] = [
     }
   },
   {
+    path: '/recharge',
+    name: 'CardRechargeCenter',
+    component: () => import('@/views/user/TopUpCenterView.vue'),
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: false,
+      title: 'Recharge Center',
+      titleKey: 'topUpCenter.title',
+      descriptionKey: 'topUpCenter.description'
+    }
+  },
+  {
     path: '/redeem',
     name: 'Redeem',
     component: () => import('@/views/user/RedeemView.vue'),
@@ -999,7 +1011,8 @@ router.beforeEach(async (to, _from, next) => {
       '/admin/subscriptions',
       '/admin/redeem',
       '/subscriptions',
-      '/redeem'
+      '/redeem',
+      '/recharge'
     ]
 
     if (restrictedPaths.some((path) => to.path.startsWith(path))) {
