@@ -516,6 +516,26 @@ func TestAccountResolveMappedModel(t *testing.T) {
 	}
 }
 
+func TestAccountDeepSeekMappingMatchesNormalizedProviderAliases(t *testing.T) {
+	account := &Account{
+		Platform: PlatformCN,
+		Credentials: map[string]any{
+			"model_mapping": map[string]any{
+				"deepseek-ai/DeepSeek-V3.2": "deepseek-ai/DeepSeek-V3.2",
+			},
+		},
+	}
+
+	requested := "deepseek-ai/deepseek-v3.2"
+	if !account.IsModelSupported(requested) {
+		t.Fatalf("expected %q to match the configured DeepSeek mapping", requested)
+	}
+	mapped, matched := account.ResolveMappedModel(requested)
+	if !matched || mapped != "deepseek-ai/DeepSeek-V3.2" {
+		t.Fatalf("ResolveMappedModel(%q) = (%q, %v), want (%q, true)", requested, mapped, matched, "deepseek-ai/DeepSeek-V3.2")
+	}
+}
+
 func TestAccountGetModelMapping_AntigravityEnsuresGeminiDefaultPassthroughs(t *testing.T) {
 	account := &Account{
 		Platform: PlatformAntigravity,

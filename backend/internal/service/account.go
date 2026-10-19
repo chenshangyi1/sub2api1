@@ -1019,6 +1019,9 @@ func mappingSupportsRequestedModel(mapping map[string]string, requestedModel str
 			return true
 		}
 	}
+	if _, matched := findNormalizedDeepSeekMapping(mapping, requestedModel); matched {
+		return true
+	}
 	for pattern := range mapping {
 		if matchWildcard(pattern, requestedModel) {
 			return true
@@ -1040,7 +1043,36 @@ func resolveRequestedModelInMapping(mapping map[string]string, requestedModel st
 			return mappedModel, true
 		}
 	}
+	if mappedModel, matched := findNormalizedDeepSeekMapping(mapping, requestedModel); matched {
+		return mappedModel, true
+	}
 	return matchWildcardMappingResult(mapping, requestedModel)
+}
+
+// findNormalizedDeepSeekMapping resolves an exact DeepSeek mapping after
+// canonicalizing both the requested model and configured mapping keys. This
+// keeps provider prefixes and casing interchangeable without changing the
+// configured upstream model value.
+func findNormalizedDeepSeekMapping(mapping map[string]string, requestedModel string) (string, bool) {
+	if !isDeepSeekModelAlias(requestedModel) {
+		return "", false
+	}
+
+	canonical := normalizeDeepSeekModelName(requestedModel)
+	matches := make([]string, 0, 1)
+	for configuredModel := range mapping {
+		if isDeepSeekModelAlias(configuredModel) && normalizeDeepSeekModelName(configuredModel) == canonical {
+			matches = append(matches, configuredModel)
+		}
+	}
+	if len(matches) == 0 {
+		return "", false
+	}
+
+	// Map iteration order is intentionally random. Sort matching keys so that
+	// duplicate aliases resolve deterministically.
+	sort.Strings(matches)
+	return mapping[matches[0]], true
 }
 
 // IsModelSupported 检查模型是否在 model_mapping 中（支持通配符）
