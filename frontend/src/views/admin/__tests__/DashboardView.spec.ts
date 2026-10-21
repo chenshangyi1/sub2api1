@@ -150,7 +150,7 @@ describe('admin DashboardView', () => {
     }))
   })
 
-  it('shows profit calculated from the upstream probe cost', async () => {
+  it('shows probe account costs without displaying profit', async () => {
     const wrapper = mount(DashboardView, {
       global: {
         stubs: {
@@ -168,8 +168,9 @@ describe('admin DashboardView', () => {
 
     await flushPromises()
 
-    expect(wrapper.text()).toContain('admin.dashboard.profit')
-    expect(wrapper.text()).toContain('$1.75')
+    expect(wrapper.text()).not.toContain('admin.dashboard.profit')
+    expect(wrapper.text()).not.toContain('$1.75')
     expect(wrapper.text()).toContain('admin.dashboard.probeAccountCost')
+    expect(wrapper.text()).toContain('$1.25')
   })
 })

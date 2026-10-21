@@ -103,7 +103,7 @@
         </div>
 
         <!-- Row 2: Token Stats -->
-        <div class="grid grid-cols-2 gap-4 lg:grid-cols-5">
+        <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
           <!-- Today Tokens -->
           <div class="card p-4">
             <div class="flex items-center gap-3">
@@ -176,30 +176,21 @@
             </div>
           </div>
 
-          <!-- Profit -->
+          <!-- Probe Account Cost -->
           <div class="card p-4">
             <div class="flex items-center gap-3">
               <div class="rounded-lg bg-teal-100 p-2 dark:bg-teal-900/30">
-                <Icon name="trendingUp" size="md" class="text-teal-600 dark:text-teal-400" :stroke-width="2" />
+                <Icon name="database" size="md" class="text-teal-600 dark:text-teal-400" :stroke-width="2" />
               </div>
               <div>
                 <p class="text-xs font-medium text-gray-500 dark:text-gray-400">
-                  {{ t('admin.dashboard.profit') }}
+                  {{ t('admin.dashboard.probeAccountCost') }}
                 </p>
-                <p
-                  class="text-xl font-bold"
-                  :class="stats.total_profit >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'"
-                >
-                  ${{ formatCost(stats.total_profit) }}
+                <p class="text-xl font-bold text-gray-900 dark:text-white">
+                  ${{ formatCost(stats.total_probe_account_cost) }}
                 </p>
                 <p class="text-xs text-gray-500 dark:text-gray-400">
-                  {{ t('admin.dashboard.probeAccountCost') }}: ${{ formatCost(stats.total_probe_account_cost) }}
-                </p>
-                <p
-                  class="text-xs"
-                  :class="stats.today_profit >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'"
-                >
-                  {{ t('common.today') }}: ${{ formatCost(stats.today_profit) }}
+                  {{ t('common.today') }}: ${{ formatCost(stats.today_probe_account_cost) }}
                 </p>
               </div>
             </div>
